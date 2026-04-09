@@ -23,12 +23,16 @@ mkdir -p logs/copilot
 
 # Extract timestamp and session info
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+SESSION_ID=$(date +%s%N)
 CWD=$(pwd)
 
 # Log session start using jq for proper JSON encoding
-jq -Rn --arg timestamp "$TIMESTAMP" --arg cwd "$CWD" \
-  '{"timestamp":$timestamp,"event":"sessionStart","cwd":$cwd}' \
+jq -Rn --arg timestamp "$TIMESTAMP" --arg cwd "$CWD" --arg sessionId "$SESSION_ID" \
+  '{"timestamp":$timestamp,"event":"sessionStart","sessionId":$sessionId,"cwd":$cwd}' \
   >> logs/copilot/session.log
 
-echo "📝 Session logged"
+# Save session ID for the sessionEnd script
+echo "$SESSION_ID" > /tmp/gemini_session_id.log
+
+echo "📝 Session started and logged with ID: $SESSION_ID"
 exit 0
