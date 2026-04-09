@@ -5,11 +5,14 @@ import java.util.Objects;
 import org.bson.types.ObjectId;
 
 import io.quarkus.mongodb.panache.common.MongoEntity;
+import jakarta.validation.constraints.NotBlank;
 
 @MongoEntity(collection="books")
 public class Book {
     public ObjectId id; // MongoDB irá gerar automaticamente
+    @NotBlank(message="Title may not be blank")
     private String title;
+    @NotBlank(message="Author may not be blank")
     private String author;
     private boolean reading;
     private boolean read;

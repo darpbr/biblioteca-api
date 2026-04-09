@@ -6,6 +6,7 @@ import java.util.List;
 import br.com.darp.application.BookService;
 import br.com.darp.domain.Book;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -26,7 +27,7 @@ public class BookResource {
     BookService service;
 
     @POST
-    public Response create(Book book) {
+    public Response create(@Valid Book book) {
         Book created = service.create(book);
         return Response.status(Response.Status.CREATED).entity(created).build();
     }

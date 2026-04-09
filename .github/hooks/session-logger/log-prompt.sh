@@ -15,18 +15,18 @@ if ! command -v jq &> /dev/null; then
   exit 1
 fi
 
-# Read input from Copilot (contains prompt info)
-INPUT=$(cat)
-
 # Create logs directory if it doesn't exist
 mkdir -p logs/copilot
 
-# Extract timestamp
-TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-
-# Log prompt using jq for proper JSON encoding
-jq -Rn --arg timestamp "$TIMESTAMP" --arg level "${LOG_LEVEL:-INFO}" \
-  '{"timestamp":$timestamp,"event":"userPromptSubmitted","level":$level}' \
-  >> logs/copilot/prompts.log
+# Read input from Gemini CLI (stdin), which is expected to be a JSON object
+# containing the prompt. We extract the prompt text and merge it with our log entry.
+# We also include a placeholder for tokenCount, which is currently not supplied.
+jq -R 'fromjson? | . as $input | {
+    "timestamp": (now | todateiso8601),
+    "event": "userPromptSubmitted",
+    "level": (env.LOG_LEVEL // "INFO"),
+    "prompt": ($input.prompt // "PROMPT_FIELD_NOT_FOUND_IN_INPUT"),
+    "tokenCount": ($input.tokenCount // null)
+  }' >> logs/copilot/prompts.log
 
 exit 0
