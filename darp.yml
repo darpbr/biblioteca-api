@@ -1,0 +1,12 @@
+version: "1.0"
+project:
+  name: "biblioteca-api"
+governance:
+  lifecycle: .darp/lifecycle.md
+workflows:
+  default: implement
+skills:
+  documentation: .agents/skills/documentation
+  architecture: .agents/skills/architecture
+  testing: .agents/skills/testing
+  release: .agents/skills/release
